@@ -5,6 +5,11 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import http from "http";
 import homeRouter from "./routes/home";
+import usersRouter from "./routes/users";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+
+require('dotenv').config();
 
 const debug = require('debug')('calvin-barista:server');
 const app = express();
@@ -26,6 +31,23 @@ server.on('listening', onListening);
 
 
 app.use('/', homeRouter);
+app.use('/channels', usersRouter);
+
+const swaggerSpec = swaggerJSDoc({
+  failOnErrors: true,
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Calvin the Barista App',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./src/routes**/*.ts'], // files containing annotations as above
+});
+
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpec))
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
