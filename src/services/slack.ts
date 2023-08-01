@@ -16,7 +16,7 @@ export async function channelUsers(channelName: string) {
 }
 
 
-export async function listChannels(channelName: string) {
+export async function listChannels() {
     const headers = {
         Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
         charset: 'utf-8',
@@ -78,4 +78,70 @@ export async function listUsers() {
         }
     );
     return usersResponse.data.members
+}
+
+
+
+export async function createDMChannel(userIds: string[]) {
+    const headers = {
+        Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+        charset: 'utf-8',
+    }
+    const botId = process.env.BOT_ID;
+
+    try {
+        const response = await axios.post(
+            'https://slack.com/api/conversations.open',
+            {
+                users: [...userIds, botId].join(',')
+            },
+     {
+                headers
+            }
+        );
+
+        const { channel } = response.data;
+        if (!channel) {
+            throw new Error(response.data.error)
+        }
+        const initialChannelMessage = await sendMessageToChannel(channel.id, 'Hello welcome to this new round!');
+
+        if(!initialChannelMessage.ok) {
+            throw new Error(initialChannelMessage.error);
+        }
+
+        return channel;
+    } catch (error) {
+        console.error('Error creating DM channel:', error.message);
+        throw new Error('Failed to create DM channel');
+    }
+}
+
+
+async function sendMessageToChannel(channelId, messageText) {
+    const headers = {
+        Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+        charset: 'utf-8',
+    }
+
+    try {
+        const response = await axios.post(
+            'https://slack.com/api/chat.postMessage',
+            {
+                channel: channelId,
+                text: messageText,
+            },
+            {
+                headers
+            }
+        );
+
+        // If you want, you can do something with the API response, but for this example, we'll just log it
+        console.log('Message sent:', response.data);
+
+        return response.data;
+    } catch (error) {
+        console.error('Error sending message:', error.message);
+        throw new Error('Failed to send message');
+    }
 }

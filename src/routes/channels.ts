@@ -1,7 +1,7 @@
 import express from "express";
 import {channelUsers} from "../services/slack";
 
-const usersRouter = express.Router();
+const channelsRouter = express.Router();
 
 /**
  * @swagger
@@ -20,7 +20,7 @@ const usersRouter = express.Router();
  *          200:
  *            description: OK
  */
-usersRouter.get('/:channel/users', async function (req, res, next) {
+channelsRouter.get('/:channel/users', async function (req, res) {
     try {
         const channelId = req.params.channel; // Replace with the ID of the Slack channel you want to fetch users from
 
@@ -34,4 +34,5 @@ usersRouter.get('/:channel/users', async function (req, res, next) {
 })
 
 
-export default usersRouter;
+
+export default channelsRouter;

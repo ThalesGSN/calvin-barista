@@ -5,9 +5,10 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import http from "http";
 import homeRouter from "./routes/home";
-import usersRouter from "./routes/users";
+import channelsRouter from "./routes/channels";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
+import roundRouter from "./routes/round";
 
 require('dotenv').config();
 
@@ -31,7 +32,8 @@ server.on('listening', onListening);
 
 
 app.use('/', homeRouter);
-app.use('/channels', usersRouter);
+app.use('/channels', channelsRouter);
+app.use('/round', roundRouter);
 
 const swaggerSpec = swaggerJSDoc({
   failOnErrors: true,
