@@ -1,8 +1,13 @@
 FROM node:18
-WORKDIR /usr/src/app
+WORKDIR /usr/calvin
 COPY package*.json ./
 RUN yarn install
 COPY . .
 EXPOSE 8000
-CMD [ "node", "start" ]
+WORKDIR /usr/calvin/src
+CMD [ "ls" ]
+CMD [ "tsc" ]
+CMD [ "node", "./app.js" ]
+
+
 
