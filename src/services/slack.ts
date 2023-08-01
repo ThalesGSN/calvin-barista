@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export async function channelUsers(channelName: string) {
-    const channels = await listChannels(channelName);
+    const channels = await listChannels();
     const channel = channels.find((channel) => channel.name === channelName);
 
     if (!channel) {
